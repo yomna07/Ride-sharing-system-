@@ -16,109 +16,72 @@ public class RideSharingSystem implements IRideSharingSystem {
         this.rides = new RideList();
     }
 
-    // load riders from csv file
-    public boolean loadRidersFromCSV(String ridersFilePath) {
-        Scanner fileScan = null;
-        try {
-            fileScan = new Scanner(new File(ridersFilePath));
-            while (fileScan.hasNextLine()) {
-                String rowLine = fileScan.nextLine();
-                if (rowLine == null || rowLine.trim().isEmpty()) continue;
-                
-                String[] cols = rowLine.split(",");
-                if (cols.length < 5) continue;
-                
-                try {
-                    int rId = Integer.parseInt(cols[0].trim());
-                    String rName = cols[1].trim();
-                    String rEmail = cols[2].trim();
-                    String rPhone = cols[3].trim();
-                    String rCity = cols[4].trim();
-                    
-                    addRider(new Rider(rId, rName, rEmail, rPhone, rCity));
-                } catch (Exception err) {
-                }
+public boolean loadRidersFromCSV(String ridersFilePath) {
+    try {
+        Scanner file = new Scanner(new File(ridersFilePath));
+        while (file.hasNextLine()) {
+            String[] f = file.nextLine().split(",");
+            try {
+                addRider(new Rider(Integer.parseInt(f[0]), f[1], f[2], f[3], f[4]));
+            } catch (Exception e) {
             }
-            fileScan.close();
-            return true;
-        } catch (FileNotFoundException ex) {
-            if (fileScan != null) fileScan.close();
-            return false;
         }
+        file.close();
+        return true;
+    } catch (FileNotFoundException e) {
+        return false;
     }
+}
 
-    // load drivers from csv file
-    public boolean loadDriversFromCSV(String driversFilePath) {
-        Scanner fileScan = null;
-        try {
-            fileScan = new Scanner(new File(driversFilePath));
-            while (fileScan.hasNextLine()) {
-                String rowLine = fileScan.nextLine();
-                if (rowLine == null || rowLine.trim().isEmpty()) continue;
-                
-                String[] cols = rowLine.split(",");
-                if (cols.length < 5) continue;
-                
-                try {
-                    int dId = Integer.parseInt(cols[0].trim());
-                    String dName = cols[1].trim();
-                    String dPhone = cols[2].trim();
-                    String dPlate = cols[3].trim();
-                    VehicleType vType = VehicleType.valueOf(cols[4].trim());
-                    
-                    addDriver(new Driver(dId, dName, dPhone, dPlate, vType));
-                } catch (Exception err) {
-                }
+public boolean loadDriversFromCSV(String driversFilePath) {
+    try {
+        Scanner file = new Scanner(new File(driversFilePath));
+        while (file.hasNextLine()) {
+            String[] f = file.nextLine().split(",");
+            try {
+                VehicleType type = VehicleType.valueOf(f[4]);
+                addDriver(new Driver(Integer.parseInt(f[0]), f[1], f[2], f[3], type));
+            } catch (Exception e) {
             }
-            fileScan.close();
-            return true;
-        } catch (FileNotFoundException ex) {
-            if (fileScan != null) fileScan.close();
-            return false;
         }
+        file.close();
+        return true;
+    } catch (FileNotFoundException e) {
+        return false;
     }
+}
 
-    // load rides data from csv
-    public boolean loadRidesFromCSV(String ridesFilePath) {
-        Scanner fileScan = null;
-        try {
-            fileScan = new Scanner(new File(ridesFilePath));
-            while (fileScan.hasNextLine()) {
-                String rowLine = fileScan.nextLine();
-                if (rowLine == null || rowLine.trim().isEmpty()) continue;
-                
-                String[] cols = rowLine.split(",");
-                try {
-                    String category = cols[0].trim();
-                    String pickupPlace = cols[1].trim();
-                    IDateTime pTime = DateTime.parse(cols[2].trim());
-                    IDateTime dTime = DateTime.parse(cols[3].trim());
-                    String dropoffPlace = cols[4].trim();
-                    int drvId = Integer.parseInt(cols[5].trim());
-                    String[] tokenIds = cols[6].trim().split(";");
-                    
-                    if (category.equals("PRIVATE")) {
-                        int rKey = Integer.parseInt(tokenIds[0].trim());
-                        schedulePrivateRide(pickupPlace, pTime, dTime, dropoffPlace, rKey, drvId);
-                    } else {
-                        int[] rKeysArr = new int[tokenIds.length];
-                        for (int i = 0; i < tokenIds.length; i++) {
-                            rKeysArr[i] = Integer.parseInt(tokenIds[i].trim());
-                        }
-                        scheduleSharedRide(pickupPlace, pTime, dTime, dropoffPlace, rKeysArr, drvId);
-                    }
-                } catch (Exception err) {
+public boolean loadRidesFromCSV(String ridesFilePath) {
+    try {
+        Scanner file = new Scanner(new File(ridesFilePath));
+        while (file.hasNextLine()) {
+            String[] f = file.nextLine().split(",");
+            try {
+                IDateTime pickupTime = DateTime.parse(f[2]);
+                IDateTime dropoffTime = DateTime.parse(f[3]);
+                int driverId = Integer.parseInt(f[5]);
+                String[] ids = f[6].split(";");
+
+                if (f[0].equals("PRIVATE")) {
+                    int riderId = Integer.parseInt(ids[0]);
+                    schedulePrivateRide(f[1], pickupTime, dropoffTime, f[4],
+                                        riderId, driverId);
+                } else {
+                    int[] riderIds = new int[ids.length];
+                    for (int i = 0; i < ids.length; i++)
+                        riderIds[i] = Integer.parseInt(ids[i]);
+                    scheduleSharedRide(f[1], pickupTime, dropoffTime, f[4],
+                                       riderIds, driverId);
                 }
+            } catch (Exception e) {
             }
-            fileScan.close();
-            return true;
-        } catch (FileNotFoundException ex) {
-            if (fileScan != null) fileScan.close();
-            return false;
         }
+        file.close();
+        return true;
+    } catch (FileNotFoundException e) {
+        return false;
     }
-
-    public boolean addRider(IRider rider) {
+}    public boolean addRider(IRider rider) {
         if (rider == null)
             return false;
         if (riders.findByEmail(rider.getEmail()) != null)
