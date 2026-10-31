@@ -1,4 +1,4 @@
-package codes;
+
 
 public abstract class Person implements IPerson {
 	
