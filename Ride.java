@@ -1,4 +1,4 @@
-package codes;
+
 
 public abstract class Ride implements IRide{
 
@@ -58,7 +58,7 @@ public abstract class Ride implements IRide{
 	public abstract boolean hasRider(int riderId);
 
 	public String toString() {
-		return "Ride ID: " + RideID + "\nPickup Location: " + pickUpLocation + "\nDropoff Location: " + dropOffLocation + "\nPickup Time: " + pickUpTime.format() + "\nDropoff Time: " + dropOffTime.format() + "\nRide Driver: " + driver.getName()  +"\nRide Driver: " + driver.getName() + "\nDriver ID: " + driver.getId() + "\n" ;
+		return "Ride ID: " + RideID + "\nPickup Location: " + pickUpLocation + "\nDropoff Location: " + dropOffLocation + "\nPickup Time: " + pickUpTime.format() + "\nDropoff Time: " + dropOffTime.format() + "\nRide Driver: " + driver.getName()  + "\nDriver ID: " + driver.getId() + "\n" ;
 	}
 
 	
