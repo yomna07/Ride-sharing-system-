@@ -36,7 +36,7 @@ public class DateTime implements IDateTime {
 	}
 
 	public String format() {
-		return String.format("%02d/%02d/%d %02d:%02d", month, day, year, hour, minute);
+		return String.format("%02d/%02d/%d %02d:%02d", day, month , year, hour, minute);
 	}
 
 	public int compareTo(IDateTime other) {
