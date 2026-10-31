@@ -55,7 +55,7 @@ public class DriverList implements IDriverList {
         newNode.next = current.next;
         current.next = newNode;
         size++;
-        return false;
+        return true;
     }
 
     public IDriver findById(int driverId) {
