@@ -1,4 +1,4 @@
-package codes;
+
 
 public class PrivateRide extends Ride implements IPrivateRide{
 	
