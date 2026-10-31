@@ -19,69 +19,125 @@ public class RideSharingSystem implements IRideSharingSystem {
 public boolean loadRidersFromCSV(String ridersFilePath) {
     try {
         Scanner file = new Scanner(new File(ridersFilePath));
+
         while (file.hasNextLine()) {
             String[] f = file.nextLine().split(",");
+
             try {
-                addRider(new Rider(Integer.parseInt(f[0]), f[1], f[2], f[3], f[4]));
+                boolean added = addRider(new Rider( Integer.parseInt(f[0]), f[1], f[3], f[2], f[4]    ));
+
+                if (!added) {
+                    file.close();
+                    return false;
+                }
+
             } catch (Exception e) {
+                file.close();
+                return false;
             }
         }
+
         file.close();
         return true;
+
     } catch (FileNotFoundException e) {
         return false;
     }
 }
+
+
 
 public boolean loadDriversFromCSV(String driversFilePath) {
     try {
         Scanner file = new Scanner(new File(driversFilePath));
+
         while (file.hasNextLine()) {
             String[] f = file.nextLine().split(",");
+
             try {
                 VehicleType type = VehicleType.valueOf(f[4]);
-                addDriver(new Driver(Integer.parseInt(f[0]), f[1], f[2], f[3], type));
+
+                boolean added = addDriver(new Driver(
+                    Integer.parseInt(f[0]), f[1], f[2], f[3], type
+                ));
+
+                if (!added) {
+                    file.close();
+                    return false;
+                }
+
             } catch (Exception e) {
+                file.close();
+                return false;
             }
         }
+
         file.close();
         return true;
+
     } catch (FileNotFoundException e) {
         return false;
     }
 }
 
+
+
 public boolean loadRidesFromCSV(String ridesFilePath) {
     try {
         Scanner file = new Scanner(new File(ridesFilePath));
+
         while (file.hasNextLine()) {
             String[] f = file.nextLine().split(",");
+
             try {
                 IDateTime pickupTime = DateTime.parse(f[2]);
                 IDateTime dropoffTime = DateTime.parse(f[3]);
                 int driverId = Integer.parseInt(f[5]);
                 String[] ids = f[6].split(";");
 
+                boolean added;
+
                 if (f[0].equals("PRIVATE")) {
                     int riderId = Integer.parseInt(ids[0]);
-                    schedulePrivateRide(f[1], pickupTime, dropoffTime, f[4],
-                                        riderId, driverId);
-                } else {
+
+                    added = schedulePrivateRide(
+                        f[1], pickupTime, dropoffTime,
+                        f[4], riderId, driverId
+                    );
+
+                } else if (f[0].equals("SHARED")) {
                     int[] riderIds = new int[ids.length];
-                    for (int i = 0; i < ids.length; i++)
+
+                    for (int i = 0; i < ids.length; i++) {
                         riderIds[i] = Integer.parseInt(ids[i]);
-                    scheduleSharedRide(f[1], pickupTime, dropoffTime, f[4],
-                                       riderIds, driverId);
+                    }
+
+                    added = scheduleSharedRide(f[1], pickupTime, dropoffTime,  f[4], riderIds, driverId );
+
+                } else {
+                    file.close();
+                    return false;
                 }
+
+                if (!added) {
+                    file.close();
+                    return false;
+                }
+
             } catch (Exception e) {
+                file.close();
+                return false;
             }
         }
+
         file.close();
         return true;
+
     } catch (FileNotFoundException e) {
         return false;
     }
-}    public boolean addRider(IRider rider) {
+}
+    public boolean addRider(IRider rider) {
         if (rider == null)
             return false;
         if (riders.findByEmail(rider.getEmail()) != null)
