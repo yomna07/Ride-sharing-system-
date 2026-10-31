@@ -192,11 +192,11 @@ public class Main {
 				System.out.println("Enter dropoff location: ");
 				String dropoffL = input.nextLine();
 
-				System.out.println("Enter pickup date and time: DD/MM/YYYY HH:MM"); // pick up date/time
+				System.out.println("Enter pickup date and time: MM/DD/YYYY HH:MM"); // pick up date/time
 				DateTime pickupDT = DateTime.parse(input.nextLine());
 				
 
-				System.out.println("Enter dropoff date and time: DD/MM/YYYY HH:MM" );  // drop off date/time
+				System.out.println("Enter dropoff date and time: MM/DD/YYYY HH:MM" );  // drop off date/time
 				DateTime dropoffDT = DateTime.parse(input.nextLine());
 
 
