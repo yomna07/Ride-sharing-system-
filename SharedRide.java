@@ -1,4 +1,4 @@
-package codes;
+
 
 public class SharedRide extends Ride implements ISharedRide{
 	
@@ -62,6 +62,24 @@ public class SharedRide extends Ride implements ISharedRide{
 		}
 		
 		return riders.retrieve().getId() == riderId;
+		
+	}
+	
+	public String toString() {
+		
+		if (riders.empty())
+			return "No riders\n";
+		
+		riders.findFirst();
+		String str = super.toString();
+		while (!riders.last()){
+			str = str + riders.retrieve().toString() +"\n";
+			riders.findNext(); 
+		}
+		str = str + riders.retrieve() +"\n";
+			
+		return str;
+		
 		
 	}
 
