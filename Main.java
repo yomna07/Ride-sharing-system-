@@ -1,4 +1,4 @@
-package codes;
+
 
 import java.util.*;
 
@@ -92,7 +92,7 @@ public class Main {
 						System.out.println("Rider not added");
 
 				} catch (IllegalArgumentException e) {
-					e.getMessage();
+					System.out.println (e.getMessage());
 
 				}
 
@@ -114,7 +114,7 @@ public class Main {
 					printList(rideSharing.searchDriversByVehicleType(vType));
 
 				} catch (IllegalArgumentException e) {
-					e.getMessage();
+					System.out.println(e.getMessage());
 				}
 
 				break;
@@ -135,11 +135,10 @@ public class Main {
 				System.out.println("Enter driver vehicle plate: ");
 				String driverPlate = input.nextLine();
 
-				System.out.println("Enter driver vehicle type: SEDAN, LUXURY_SEDAN, SUV, VAN) ");
-				VehicleType vType = VehicleType.valueOf( input.nextLine());
 				
-
 				try {
+					System.out.println("Enter driver vehicle type: SEDAN, LUXURY_SEDAN, SUV, VAN) ");
+					VehicleType vType = VehicleType.valueOf( input.nextLine());
 					Driver driver = new Driver(driverID, driverName, driverPhone, driverPlate, vType);
 					if (rideSharing.addDriver(driver))
 						System.out.println("Driver added successfully");
@@ -148,7 +147,7 @@ public class Main {
 						System.out.println("Driver not added");
 
 				} catch (IllegalArgumentException e) {
-					e.getMessage();
+					System.out.println(e.getMessage());
 				}
 
 				break;
@@ -212,7 +211,10 @@ public class Main {
 					System.out.println("Enter rider id:");
 					int rideRiderID = input.nextInt();
 
-					rideSharing.schedulePrivateRide(pickupL, pickupDT, dropoffDT, dropoffL, rideRiderID, rideDriverID);
+					if (rideSharing.schedulePrivateRide(pickupL, pickupDT, dropoffDT, dropoffL, rideRiderID, rideDriverID))
+						System.out.println("Private ride is scheduled successfully");
+					else 
+						System.out.println("Private ride was not scheduled, please try again");
 				}
 
 				if (rideType == 'b') {
@@ -232,7 +234,10 @@ public class Main {
 
 					}
 
-					rideSharing.scheduleSharedRide(pickupL, pickupDT, dropoffDT, dropoffL, riderIds, rideDriverID);
+					if (rideSharing.scheduleSharedRide(pickupL, pickupDT, dropoffDT, dropoffL, riderIds, rideDriverID))
+						System.out.println("Shared ride is scheduled successfully");
+					else 
+						System.out.println("Shared ride was not scheduled, please try again");
 
 				}
 			}
